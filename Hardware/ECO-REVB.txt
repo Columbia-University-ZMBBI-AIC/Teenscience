@@ -1,0 +1,81 @@
+
+TeenSience Platform   
+
+VERSION ZIAIC00025 REVB3  5/20/20  R.Hormigo
+
+
+
+Main P1
+1- PGM switch shoud be RST and go to J3 and Arduino connector side RST. (The Arduino 6 pin program port still will be lelf as PGM)
+2- VPWR needs new SK Diode (D16) for inverted voltage peaks from inductance at Motor Controllers
+3- R1 to R14 changed to 20 Ohm. The hiher value interfered specially with clocks and high frequency signals 
+
+DC Motors P2
+1- C11 and C14 to have parallel 10uF caps
+2- R45 and R31 must be 0.025 Ohm to hadle higher currents.
+Steppers P2
+1- ~RESET signal gets unified in D43, D47 goes for Interrupt in new GPIO expander chip
+
+Inst. Amplifiers P3
+1-Change R65 to 4.3K to create a reference of 1.5V. Needed to center DC out range on amps to ADC
+  (Change all 4.7Ks in board to 4.3K to unify values, this is the only critical one)
+2-Eliminate voltage divider by default in exit. R74 fom 10K to 2.2K, and R77 removed NP.
+3- Remove ADC Aref by default 3V, So R88 goes NP
+
+Switches P3
+Signals moved from A3 UP, A11 DW, and A10 SEL to New I/O Expander 8 UP, 9 DW, and 10 SEL @P4 , so A10 and A11 are still available in Arduino expansion.  
+
+LEDs P4
+Signals moved from D10 Green, D12 R, D54 G, and D55 B to New I/O Expander 4 R, 5 G, 6 B, and 7 Green  @P4, so these original signals are now GPIO and Buzzer dedicated
+
+NEW IO EXPANDER IC24 
+Controls now Switches, LEDs, and has available 13 GPIO ports (4 shared with LEDs) using J41, and J42. All ports have PWM and pull up/down capabiity. 
+
+GPIO/BUZZER P4
+Buzzer is now a piezo trandsducer regulable in loudness with trimmer R117 and goes single ended controlled by D10. Removed original R127 and R128.
+Can also drive external buzzer.  
+
+  
+Audio OUTPUT P5
+1- Audio Amp R148 goes from 16K to 2X15K in parallel (7.5K)
+2-Paralell 10uF with C53
+
+Audio IN P5
+1- Use MLCC 10uF 35V X7R for C45, C47
+2- Reduce R137 from 500K to 200K
+3- Replace R130 with 0 Ohm
+4- Add Pi filtering from 5V rail in R143 2 X 2.2K and 10uF cap
+5- R148 changed now 2 X 15K (7.5K)
+6- I2C Address
+7- Global Reset for IC22 I2S in ~PD 
+8- Added aditional bypass for low freq current ripple C69
+
+
+
+Fixes in prototype REVA :
+R10, R12, R14 changed to 0 (Audio I2S)
+Placed new protection Sk Diode D16
+PGM Switch changed to RST
+R31, and R45 have two parallel 0.056 (0.028 Ohm)
+Added bypass 10uF caps in parallel with C11, C14.
+R65 to 4.3k (using a 4.7K on top of a 56K)
+R75 had wrong value 10K * that limits gain
+R74, R96 changed to 2.2K
+R77, R97 Removed
+IC16 broken and remplaced * This id what broke 4 GPIOs
+
+
+ 5/18/2020 Sent for PCB Fab to PCBWay W27198ASR11_ZIAIC00025B.zip TeenScience
+    Then fixed fab note to request Fr4 150 material (that is widely more available and inexpensive)
+    Added origin and fiducials note in Fab Notes for manufacturing.
+    Regenerated CAM set of files is REV B2 files now.
+
+
+5/19 After sent to PCB manufacturing and CM files found a few issues that the CM has now on time, for the PCB is cosmetic and not worth but REVB3 files have been done
+
+ -Schematic and BOM had to wrong part# for header connectors J41 and J42, fixed and generated new schematic and BOM REV B3
+ -Centroid of Microphone MK1 was off and the silkscreen pin 1 was on the flip side. Updated footprint and generated new Silkscreen top geber and Pick and Place file. 
+
+5/20
+	After reviewing feendback from CM of a missing part (pipes lights) and speaker, I realized schematic is not giving BOM out for non PCB items. 
+        Added a dummy footprint on library for these parrs and updated BOM as REV B4 
